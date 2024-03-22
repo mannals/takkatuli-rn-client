@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 30,
     backgroundColor: '#4E392A',
-    height: 130,
+    height: 110,
   },
   iconsContainer: {
     flex: 2,

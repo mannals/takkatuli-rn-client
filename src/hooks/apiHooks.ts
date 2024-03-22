@@ -1,5 +1,5 @@
 import {fetchData} from '../lib/functions';
-import {User} from '../types/DBTypes';
+import {Category, User} from '../types/DBTypes';
 import {Credentials} from '../types/LocalTypes';
 import {LoginResponse, UserResponse} from '../types/MessageTypes';
 
@@ -74,4 +74,13 @@ const useAuth = () => {
   return {postLogin};
 };
 
-export {useUser, useAuth};
+const useMedia = () => {
+  const getAllCategories = async () => {
+    return await fetchData<Category[]>(
+      process.env.EXPO_PUBLIC_MEDIA_API + '/media/category',
+    );
+  };
+  return {getAllCategories};
+};
+
+export {useUser, useAuth, useMedia};
