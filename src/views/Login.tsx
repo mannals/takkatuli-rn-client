@@ -6,9 +6,14 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import Logo from '../components/Logo';
 import LoginForm from '../components/LoginForm';
+import Header from '../components/Header';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,17 +24,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  topContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   loginContainer: {
     flex: 4,
-    width: Dimensions.get('window').width - 50,
+    width: Dimensions.get('window').width,
     marginTop: 0,
     marginBottom: 20,
-    borderRadius: 20,
     backgroundColor: '#EEEEEE',
     alignItems: 'center',
     justifyContent: 'center',
@@ -51,21 +50,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const Login = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
+const Login = () => {
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   return (
     <View style={styles.container}>
-      <View style={styles.topContainer}>
-        <Logo />
-      </View>
+      <Header />
       <View style={styles.loginContainer}>
         <Text style={styles.headerText}>Kirjaudu sisään</Text>
         <LoginForm />
         <View style={styles.links}>
-          <TouchableOpacity style={styles.linkText}>
-            <View>
-              <Text style={{color: '#004aad'}}>Unohditko salasanasi?</Text>
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity
             style={styles.linkText}
             onPress={() => {

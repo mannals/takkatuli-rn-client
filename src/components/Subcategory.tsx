@@ -1,10 +1,29 @@
 import {faComment} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import moment from 'moment';
+import {SubcatWithLatest} from '../types/DBTypes';
 
-const Subcategory = () => {
+type Props = {
+  item: SubcatWithLatest;
+  navigation: NavigationProp<ParamListBase>;
+};
+
+const SubcategoryItem = ({item, navigation}: Props) => {
+  const latest = item.latest;
+
+  const truncate = (str: string) => {
+    return str.length > 30 ? str.substring(0, 30 - 1) + '...' : str;
+  };
+
   return (
-    <View style={styles.subcategoryContainer}>
+    <TouchableOpacity
+      style={styles.subcategoryContainer}
+      onPress={() => {
+        navigation.navigate('Alakategoria', {subcat_id: item.subcategory_id});
+      }}
+    >
       <FontAwesomeIcon
         icon={faComment}
         size={40}
@@ -12,16 +31,22 @@ const Subcategory = () => {
         style={{marginVertical: 20, marginHorizontal: 10}}
       />
       <View style={styles.subcategoryInfo}>
-        <Text style={styles.subcategoryTitle}>Subcategory</Text>
-        <Text style={styles.subcategoryLatest}>
-          Title of latest post in subcategory
-        </Text>
-        <View style={styles.whoWhen}>
-          <Text style={{fontWeight: 'bold'}}>Time</Text>
-          <Text>Author</Text>
-        </View>
+        <Text style={styles.subcategoryTitle}>{item.title}</Text>
+        {latest && (
+          <>
+            <Text style={styles.subcategoryLatest}>
+              {truncate(latest.original.title)}
+            </Text>
+            <View style={styles.whoWhen}>
+              <Text style={{fontWeight: 'bold'}}>
+                {moment(latest.created_at).startOf('day').fromNow()}
+              </Text>
+              <Text>{latest.username}</Text>
+            </View>
+          </>
+        )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -55,7 +80,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 10,
     marginTop: 10,
+    width: '80%',
   },
 });
 
-export default Subcategory;
+export default SubcategoryItem;

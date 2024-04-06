@@ -6,11 +6,9 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
 import RegisterForm from '../components/RegisterForm';
-import Logo from '../components/Logo';
+import Header from '../components/Header';
 
 const styles = StyleSheet.create({
   container: {
@@ -21,19 +19,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  topContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   registerContainer: {
     flex: 4,
     position: 'relative',
-    width: Dimensions.get('window').width - 50,
+    width: Dimensions.get('window').width,
     marginTop: 0,
     marginBottom: 20,
-    borderRadius: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#EEEEEE',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -61,24 +53,11 @@ const Register = ({
 }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.topContainer}>
-        <Logo />
-      </View>
+      <Header />
       <View style={styles.registerContainer}>
         <Text style={styles.headerText}>Luo profiili</Text>
         <RegisterForm />
         <View style={styles.links}>
-          <TouchableOpacity
-            style={styles.linkText}
-            onPress={() => {
-              // TODO: Navigate to the company registration screen
-              // navigation.navigate('RekisteröiYritys');
-            }}
-          >
-            <View>
-              <Text style={{color: '#004aad'}}>Teetkö tiliä yritykselle?</Text>
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity
             style={styles.linkText}
             onPress={() => {

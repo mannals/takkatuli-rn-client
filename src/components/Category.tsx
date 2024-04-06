@@ -1,14 +1,28 @@
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import {CategoryWithSubcategories} from '../types/DBTypes';
 import Subcategory from './Subcategory';
 
-const Category = () => {
+type Props = {
+  item: CategoryWithSubcategories;
+  navigation: NavigationProp<ParamListBase>;
+};
+
+const CategoryItem = ({item, navigation}: Props) => {
   return (
     <View style={styles.container}>
-      <View style={styles.categoryContainer}>
-        <Text style={styles.categoryTitle}>Category</Text>
-      </View>
-      <Subcategory />
-      <Subcategory />
+      <TouchableOpacity style={styles.categoryContainer}>
+        <Text style={styles.categoryTitle}>{item.title}</Text>
+      </TouchableOpacity>
+      {item.subcategories && (
+        <FlatList
+          data={item.subcategories}
+          keyExtractor={(item) => item.subcategory_id.toString()}
+          renderItem={({item}) => (
+            <Subcategory item={item} navigation={navigation} />
+          )}
+        />
+      )}
     </View>
   );
 };
@@ -33,4 +47,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Category;
+export default CategoryItem;

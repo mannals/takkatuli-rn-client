@@ -2,12 +2,15 @@ import {StatusBar} from 'expo-status-bar';
 import {Platform, StyleSheet} from 'react-native';
 import Navigator from './src/navigators/Navigator';
 import Home from './src/views/Home';
+import {UserProvider} from './src/contexts/UserContext';
 
 const App = () => {
   return (
     <>
-      <Home />
-      <StatusBar style="auto" />
+      <UserProvider>
+        <Navigator />
+        <StatusBar style="auto" />
+      </UserProvider>
     </>
   );
 };

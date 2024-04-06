@@ -1,6 +1,16 @@
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faUser, faBars} from '@fortawesome/free-solid-svg-icons';
-import {View, StyleSheet} from 'react-native';
+import {
+  faUser,
+  faBars,
+  faRightToBracket,
+} from '@fortawesome/free-solid-svg-icons';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
+import {useUserContext} from '../hooks/ContextHooks';
 import Logo from './Logo';
 
 const styles = StyleSheet.create({
@@ -21,16 +31,41 @@ const styles = StyleSheet.create({
 });
 
 const Header = () => {
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const {user} = useUserContext();
   return (
     <View style={styles.headerContainer}>
       <Logo />
       <View style={styles.iconsContainer}>
-        <FontAwesomeIcon
-          icon={faUser}
-          size={30}
-          color={'#EEEEEE'}
-          style={{marginHorizontal: 15}}
-        />
+        {user ? (
+          <TouchableOpacity
+            id="profileButton"
+            onPress={() => {
+              navigation.navigate('Profiili');
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faUser}
+              size={30}
+              color={'#EEEEEE'}
+              style={{marginHorizontal: 15}}
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            id="loginButton"
+            onPress={() => {
+              navigation.navigate('Kirjaudu');
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faRightToBracket}
+              size={30}
+              color={'#EEEEEE'}
+              style={{marginHorizontal: 15}}
+            />
+          </TouchableOpacity>
+        )}
         <FontAwesomeIcon
           icon={faBars}
           size={30}

@@ -1,4 +1,5 @@
-import {View, StyleSheet, Image} from 'react-native';
+import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
+import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,10 +17,16 @@ const styles = StyleSheet.create({
 });
 
 const Logo = () => {
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => {
+        navigation.navigate('Etusivu');
+      }}
+    >
       <Image style={styles.logo} source={require('../../assets/logo.png')} />
-    </View>
+    </TouchableOpacity>
   );
 };
 

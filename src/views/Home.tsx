@@ -1,24 +1,34 @@
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, FlatList} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faHome} from '@fortawesome/free-solid-svg-icons';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import Header from '../components/Header';
-import Category from '../components/Category';
+import {useCategories} from '../hooks/apiHooks';
+import CategoryItem from '../components/Category';
 
 const Home = () => {
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const {catsWithSubcats} = useCategories();
+
   return (
     <>
       <Header />
-      <ScrollView>
-        <View style={styles.container}>
-          <View style={styles.siteLocation}>
-            <FontAwesomeIcon icon={faHome} size={25} color={'#4E392A'} />
-            <Text style={styles.home}>Etusivu</Text>
-          </View>
-          <Category />
-          <Category />
-          <Category />
+      <View style={styles.container}>
+        <View style={styles.siteLocation}>
+          <FontAwesomeIcon icon={faHome} size={25} color={'#4E392A'} />
+          <Text style={styles.home}>Etusivu</Text>
         </View>
-      </ScrollView>
+        <FlatList
+          data={catsWithSubcats}
+          renderItem={({item}) => (
+            <CategoryItem navigation={navigation} item={item} />
+          )}
+        />
+      </View>
       <View>
         <Text>Footer here</Text>
       </View>

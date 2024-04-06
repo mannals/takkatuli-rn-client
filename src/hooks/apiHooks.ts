@@ -1,7 +1,13 @@
+import {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {fetchData} from '../lib/functions';
-import {Category, User} from '../types/DBTypes';
+import {CategoryWithSubcategories, UpdateUser, User} from '../types/DBTypes';
 import {Credentials} from '../types/LocalTypes';
-import {LoginResponse, UserResponse} from '../types/MessageTypes';
+import {
+  LoginResponse,
+  MessageResponse,
+  UserResponse,
+} from '../types/MessageTypes';
 
 const useUser = () => {
   const getUserById = async (id: number) => {
@@ -47,12 +53,51 @@ const useUser = () => {
       process.env.EXPO_PUBLIC_AUTH_API + '/users/email/' + email,
     );
   };
+
+  const putUser = async (
+    token: string,
+    user: UpdateUser,
+  ): Promise<UserResponse> => {
+    const userUpdate: Partial<UpdateUser> = {};
+    for (const key in user) {
+      if (user[key]) {
+        userUpdate[key] = user[key];
+      }
+    }
+    return await fetchData<UserResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users',
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(userUpdate),
+      },
+    );
+  };
+
+  const deleteUser = async () => {
+    const token = await AsyncStorage.getItem('token');
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users',
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+  };
+
   return {
     getUserById,
     getUserByToken,
     postUser,
     getUsernameAvailability,
     getEmailAvailability,
+    putUser,
+    deleteUser,
   };
 };
 
@@ -74,13 +119,32 @@ const useAuth = () => {
   return {postLogin};
 };
 
-const useMedia = () => {
-  const getAllCategories = async () => {
-    return await fetchData<Category[]>(
-      process.env.EXPO_PUBLIC_MEDIA_API + '/media/category',
-    );
+const useCategories = () => {
+  const [catsWithSubcats, setCatsWithSubcats] = useState<
+    CategoryWithSubcategories[]
+  >([]);
+
+  const getAllCatsWithSubcats = async () => {
+    try {
+      const cats = await fetchData<CategoryWithSubcategories[]>(
+        process.env.EXPO_PUBLIC_MEDIA_API + '/categories/frontpage',
+      );
+      if (cats) {
+        setCatsWithSubcats(cats);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
-  return {getAllCategories};
+
+  useEffect(() => {
+    getAllCatsWithSubcats();
+  }, []);
+
+  return {
+    catsWithSubcats,
+    getAllCatsWithSubcats,
+  };
 };
 
-export {useUser, useAuth, useMedia};
+export {useUser, useAuth, useCategories};
