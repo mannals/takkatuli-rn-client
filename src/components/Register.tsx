@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
-import RegisterForm from '../components/RegisterForm';
-import Header from '../components/Header';
+import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
+import RegisterForm from './RegisterForm';
+import Header from './Header';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: Dimensions.get('window').width,
     marginTop: 0,
-    marginBottom: 20,
+    marginBottom: 0,
     backgroundColor: '#EEEEEE',
     alignItems: 'center',
     justifyContent: 'center',
@@ -46,31 +46,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const Register = ({
-  navigation,
-}: {
-  navigation: NavigationProp<ParamListBase>;
-}) => {
+const Register = ({handleToggle}: {handleToggle: () => void}) => {
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   return (
     <View style={styles.container}>
       <Header />
       <View style={styles.registerContainer}>
         <Text style={styles.headerText}>Luo profiili</Text>
-        <RegisterForm />
-        <View style={styles.links}>
-          <TouchableOpacity
-            style={styles.linkText}
-            onPress={() => {
-              navigation.navigate('Kirjaudu');
-            }}
-          >
-            <View>
-              <Text style={{color: '#004aad'}}>
-                Oletko jo rekisteröitynyt? Kirjaudu sisään
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        <RegisterForm handleToggle={handleToggle} />
       </View>
     </View>
   );

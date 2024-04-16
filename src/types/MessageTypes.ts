@@ -9,7 +9,7 @@ type ErrorResponse = MessageResponse & {
 };
 
 type MediaResponse = MessageResponse & {
-  media: Post | Post[];
+  media: Post;
 };
 
 // for auth server

@@ -52,8 +52,18 @@ export type Post = {
   edited_at: Date | string | null;
 };
 
+export type Poll = {
+  poll_id: number;
+  post_id: number;
+  title: string;
+  created_at: Date | string;
+  edited_at: Date | string | null;
+};
+
+
 export type PollOption = {
   option_id: number;
+  poll_id: number;
   post_id: number;
   title: string;
   created_at: Date | string;
@@ -110,6 +120,11 @@ export type CategoryWithSubcategories = Category & {
 
 export type PostWithOwner = Post & Pick<User, 'username'>;
 
+export type PostWithSubcat = Post & {
+  username: string;
+  subcategory_name: string;
+};
+
 export type PostIDandTitle = Pick<Post, 'post_id' | 'title'>;
 
 export type ReplyWithOriginal = PostWithOwner & {
@@ -127,9 +142,33 @@ export type SubcatWithLatest = Subcategory & {
   latest: PostInSubcatListing;
 };
 
+export type PostPreview = Pick<Post, 'post_id' | 'title' | 'created_at'> &
+  Pick<User, 'username'> & {
+    latest: Pick<PostWithOwner, 'created_at' | 'username'>;
+    replies_count: number;
+  };
+
 export type OriginalPost = Omit<Post, 'reply_to'>;
 
 export type PostWithoutPoll = Omit<Post, 'is_poll'>;
+
+export type MakePost = {
+  subcategory_id: number;
+  title: string;
+  text_content: string;
+  file: File | null;
+};
+
+export type NewPostWithoutFile = Pick<
+  Post,
+  'subcategory_id' | 'title' | 'text_content'
+>;
+
+export type NewPostWithFile = NewPostWithoutFile & {
+  filename: string;
+  filesize: number;
+  media_type: string;
+};
 
 export type FileInfo = {
   filename: string;

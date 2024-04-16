@@ -55,7 +55,7 @@ const Header = () => {
           <TouchableOpacity
             id="loginButton"
             onPress={() => {
-              navigation.navigate('Kirjaudu');
+              navigation.navigate('Kirjaudu/Rekisteröidy');
             }}
           >
             <FontAwesomeIcon

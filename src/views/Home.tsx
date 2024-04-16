@@ -9,6 +9,7 @@ import {
 import Header from '../components/Header';
 import {useCategories} from '../hooks/apiHooks';
 import CategoryItem from '../components/Category';
+import Footer from '../components/Footer';
 
 const Home = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
@@ -29,9 +30,7 @@ const Home = () => {
           )}
         />
       </View>
-      <View>
-        <Text>Footer here</Text>
-      </View>
+      <Footer />
     </>
   );
 };

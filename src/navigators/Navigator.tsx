@@ -1,34 +1,50 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Login from '../views/Login';
-import Register from '../views/Register';
 import {SubcategoryPage} from '../views/SubcategoryPage';
 import Home from '../views/Home';
+import LoginRegister from '../views/LoginRegister';
 import {useUserContext} from '../hooks/ContextHooks';
+import {PostPage} from '../views/PostPage';
+import {Profile} from '../views/Profile';
+import MakePost from '../views/MakePost';
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
+  const {user} = useUserContext();
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Kirjaudu"
-        component={Login}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Rekisteröidy"
-        component={Register}
-        options={{headerShown: false}}
-      />
       <Stack.Screen
         name="Etusivu"
         component={Home}
         options={{headerShown: false}}
       />
+      {user ? (
+        <Stack.Screen
+          name="Profiili"
+          component={Profile}
+          options={{headerShown: false}}
+        />
+      ) : (
+        <Stack.Screen
+          name="Kirjaudu/Rekisteröidy"
+          component={LoginRegister}
+          options={{headerShown: false}}
+        />
+      )}
       <Stack.Screen
         name="Alakategoria"
         component={SubcategoryPage}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Postaus"
+        component={PostPage}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Tee postaus"
+        component={MakePost}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

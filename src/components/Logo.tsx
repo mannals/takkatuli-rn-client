@@ -1,5 +1,9 @@
-import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
-import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
+import {StyleSheet, Image, TouchableOpacity} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {

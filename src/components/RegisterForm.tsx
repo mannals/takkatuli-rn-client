@@ -4,7 +4,7 @@ import {Card, Input} from '@rneui/base';
 import {useEffect} from 'react';
 import {useUser} from '../hooks/apiHooks';
 
-const RegisterForm = () => {
+const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
   const {postUser} = useUser();
   const initValues = {
     username: '',
@@ -25,11 +25,13 @@ const RegisterForm = () => {
     email: string;
     password: string;
   }) => {
-    console.log(inputs, 'inputs 1');
     try {
-      console.log(inputs, 'inputs 2');
       await postUser(inputs);
-      Alert.alert('User created', 'You can now login');
+      Alert.alert(
+        'Käyttäjätili luotu onnistuneesti',
+        'Voit nyt kirjautua sisään',
+      );
+      handleToggle();
     } catch (error) {
       Alert.alert('Error', (error as Error).message);
     }
@@ -129,7 +131,7 @@ const RegisterForm = () => {
             fontWeight: 'bold',
           }}
         >
-          Luo profiili
+          Rekisteröidy
         </Text>
       </TouchableOpacity>
     </Card>
