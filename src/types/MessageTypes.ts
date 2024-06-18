@@ -1,4 +1,4 @@
-import {Post, UserWithNoPassword} from './DBTypes';
+import {Post, UserWithNoPassword, UserWithProfilePicture} from './DBTypes';
 
 type MessageResponse = {
   message: string;
@@ -20,7 +20,7 @@ type LoginResponse = MessageResponse & {
 };
 
 type UserResponse = MessageResponse & {
-  user: UserWithNoPassword;
+  user: UserWithProfilePicture;
 };
 
 type UserDeleteResponse = MessageResponse & {
@@ -41,6 +41,7 @@ type UploadResponse = MessageResponse & {
     filename: string;
     media_type: string;
     filesize: number;
+    thumbnail: string;
   };
 };
 

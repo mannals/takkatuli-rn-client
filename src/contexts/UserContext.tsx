@@ -21,7 +21,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
         console.log(result.user, 'result.user', result.token, 'result.token');
       }
     } catch (error) {
-      Alert.alert((error as Error).message);
+      Alert.alert('Kirjautuminen epäonnistui');
     }
   };
 
@@ -49,6 +49,20 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
+  const handleGetUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        const result = await getUserByToken(token);
+        if (result) {
+          setUser(result.user);
+        }
+      }
+    } catch (error) {
+      console.error((error as Error).message);
+    }
+  };
+
   const handleEdit = async (values: UpdateUser) => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -73,6 +87,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
         handleLogin,
         handleLogout,
         handleAutoLogin,
+        handleGetUser,
         handleEdit,
       }}
     >

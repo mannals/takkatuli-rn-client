@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCircleChevronRight, faHome} from '@fortawesome/free-solid-svg-icons';
@@ -19,6 +20,7 @@ import {useUserContext} from '../hooks/ContextHooks';
 import {useFile, usePosts, useSubcategories} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {MakePost, NewPostWithoutFile} from '../types/DBTypes';
+import {UploadResponse} from '../types/MessageTypes';
 
 type RootStackParamList = {
   Alakategoria: {subcat_id: number};
@@ -41,7 +43,8 @@ type Props = {
 
 const MakePostPage = ({route, navigation}: Props) => {
   const [file, setFile] = useState<File | null>(null);
-  const {user} = useUserContext();
+  const [URI, setURI] = useState<string>('');
+  const [fileName, setFileName] = useState<string>('');
   const subcatId = route.params.subcat_id;
   const {postFile} = useFile();
   const {getSubcatById, thisSubcat} = useSubcategories();
@@ -51,7 +54,7 @@ const MakePostPage = ({route, navigation}: Props) => {
     subcategory_id: subcatId,
     title: '',
     text_content: '',
-    file: null,
+    file,
   };
   const {
     control,
@@ -86,7 +89,7 @@ const MakePostPage = ({route, navigation}: Props) => {
         text_content,
       };
       if (file && token) {
-        const fileResult = await postFile(file, token);
+        const fileResult = await postFile(URI, token);
         if (fileResult) {
           const postResult = await makeNewPost(fileResult, withoutFile, token);
           if (postResult) {
@@ -173,11 +176,15 @@ const MakePostPage = ({route, navigation}: Props) => {
                   onBlur={onBlur}
                   onPress={async () => {
                     try {
-                      // get pdf or doc files only
+                      // get image or video files only
                       const res = await DocumentPicker.getDocumentAsync({
                         type: ['image/*', 'video/*'],
+                        copyToCacheDirectory: true,
                       });
                       if (!res.canceled) {
+                        console.log(res);
+                        setURI(res.assets[0].uri);
+                        setFileName(res.assets[0].name);
                         onChange(res);
                       } else {
                         console.log('cancelled');
@@ -187,7 +194,11 @@ const MakePostPage = ({route, navigation}: Props) => {
                     }
                   }}
                 >
-                  <Text>Valitse tiedosto...</Text>
+                  {URI ? (
+                    <Text>{fileName}</Text>
+                  ) : (
+                    <Text>Valitse tiedosto...</Text>
+                  )}
                 </TouchableOpacity>
               )}
               name="file"

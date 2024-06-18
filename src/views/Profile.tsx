@@ -1,4 +1,13 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faCircleChevronRight,
@@ -12,11 +21,115 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import * as DocumentPicker from 'expo-document-picker';
 import {Button} from '@rneui/base';
+import {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Controller, useForm} from 'react-hook-form';
 import Header from '../components/Header';
+import {useUserContext} from '../hooks/ContextHooks';
+import {useFile, useUser, useVotes} from '../hooks/apiHooks';
+import useUpdateContext from '../hooks/updateHooks';
+import {FileValues, UploadFile} from '../types/DBTypes';
+import EditUserInfo from '../components/EditUserInfo';
+import ChangePasswordField from '../components/ChangePassword';
 
 export const Profile = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const {user, handleGetUser, handleLogout} = useUserContext();
+  const {postFile} = useFile();
+  const {
+    getUserWithProfilePicture,
+    thisUser,
+    setThisUser,
+    deleteUser,
+    profilePicture,
+    getProfilePicture,
+    changeProfilePicture,
+  } = useUser();
+  const {addVote} = useVotes();
+  const {update, setUpdate} = useUpdateContext();
+  const [picEditing, setPicEditing] = useState<boolean>(false);
+  const [infoEditing, setInfoEditing] = useState<boolean>(false);
+  const [passwordChanging, setPasswordChanging] = useState<boolean>(false);
+  const [fileValues, setFileValues] = useState({
+    filename: '',
+    filesize: 0,
+    media_type: '',
+    uri: '',
+  });
+
+  const handleDelete = async () => {
+    Alert.alert('Poistetaanko käyttäjätili?', '', [
+      {
+        text: 'Poista',
+        onPress: async () => {
+          // delete user
+          const deletion = await deleteUser();
+          Alert.alert('Käyttäjätili poistettu', '', [
+            {
+              text: 'OK',
+              onPress: () => console.log('OK'),
+            },
+          ]);
+          if (deletion) {
+            await logout();
+          }
+        },
+      },
+      {
+        text: 'Peruuta',
+        onPress: () => console.log('cancel'),
+      },
+    ]);
+  };
+
+  const logout = async () => {
+    await handleLogout();
+    navigation.navigate('Kirjaudu/Rekisteröidy');
+  };
+
+  const values: UploadFile = {
+    file: null,
+  };
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    reset,
+  } = useForm({defaultValues: values});
+
+  useEffect(() => {
+    if (!user) {
+      navigation.navigate('Kirjaudu/Rekisteröidy');
+    } else {
+      handleGetUser();
+      getProfilePicture();
+      getUserWithProfilePicture(user.user_id);
+      console.log(thisUser);
+      console.log(profilePicture);
+      console.log('profile picture', profilePicture?.filename);
+    }
+  }, [update]);
+
+  const doUpload = async (inputs: UploadFile) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (fileValues.uri && token) {
+        const fileResult = await postFile(fileValues.uri, token);
+        if (fileResult) {
+          const postResult = await changeProfilePicture(fileResult, token);
+          if (postResult) {
+            setUpdate((prev) => !prev);
+            setPicEditing(false);
+          }
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -39,53 +152,167 @@ export const Profile = () => {
           />
           <Text style={styles.locationText}>Profiili</Text>
         </View>
-        <View style={styles.pageInfo}>
-          <Text style={styles.pageTitle}>Profiili</Text>
-        </View>
-        <View style={styles.top}>
-          <FontAwesomeIcon
-            icon={faUser}
-            size={15}
-            color={'#4E392A'}
-            style={{marginRight: 10}}
-          />
-          <Text>Käyttäjänimi</Text>
-        </View>
-        <View style={styles.profPicSection}>
-          <FontAwesomeIcon
-            icon={faCircleUser}
-            size={130}
-            color={'#4E392A'}
-            style={{marginVertical: 20}}
-          />
-          <Button style={styles.button}>Vaihda profiilikuva...</Button>
-        </View>
-        <View style={styles.userInfo}>
-          <View style={styles.infoTitleEdit}>
-            <Text style={styles.infoTitle}>Omat tiedot</Text>
-            <TouchableOpacity>
-              <FontAwesomeIcon icon={faPen} size={20} color={'#4E392A'} />
+        <ScrollView>
+          <View style={styles.pageInfo}>
+            <Text style={styles.pageTitle}>Profiili</Text>
+          </View>
+          <View style={styles.top}>
+            <FontAwesomeIcon
+              icon={faUser}
+              size={15}
+              color={'#4E392A'}
+              style={{marginRight: 10}}
+            />
+            <Text>{thisUser?.username}</Text>
+          </View>
+          <View style={styles.profPicSection}>
+            {!profilePicture ? (
+              <FontAwesomeIcon
+                icon={faCircleUser}
+                size={130}
+                color={'#4E392A'}
+                style={{marginVertical: 20}}
+              />
+            ) : (
+              <View>
+                <Image
+                  style={{
+                    width: 200,
+                    height: 200,
+                    objectFit: 'scale-down',
+                    resizeMode: 'contain',
+                    marginBottom: 10,
+                    backgroundColor: '#FFFFFF',
+                  }}
+                  source={{uri: profilePicture.filename}}
+                  alt={profilePicture.filename}
+                />
+              </View>
+            )}
+            <Controller
+              control={control}
+              render={({field: {onChange, onBlur, value}}) => (
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={async () => {
+                    setPicEditing(true);
+                    try {
+                      // get image or video files only
+                      const res = await DocumentPicker.getDocumentAsync({
+                        type: ['image/*', 'video/*'],
+                        copyToCacheDirectory: true,
+                      });
+                      if (!res.canceled) {
+                        console.log(res);
+                        setFileValues({
+                          filename: res.assets[0].name,
+                          filesize: res.assets[0].size ?? 0,
+                          media_type: res.assets[0].mimeType ?? '',
+                          uri: res.assets[0].uri,
+                        });
+                        onChange(res);
+                        handleSubmit(doUpload);
+                      } else {
+                        console.log('cancelled');
+                      }
+                    } catch (err) {
+                      throw err;
+                    }
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: '#FFFFFF',
+                      fontWeight: 'bold',
+                      fontSize: 15,
+                    }}
+                  >
+                    Vaihda profiilikuva...
+                  </Text>
+                </TouchableOpacity>
+              )}
+              name="file"
+            />
+            {picEditing === false ? (
+              <></>
+            ) : (
+              <>
+                <Button
+                  title="Tallenna"
+                  onPress={handleSubmit(doUpload)}
+                  buttonStyle={styles.saveButton}
+                />
+                <Button
+                  title="Peruuta"
+                  onPress={() => setPicEditing(false)}
+                  buttonStyle={styles.cancelButton}
+                  titleStyle={{color: '#5d71c9'}}
+                />
+              </>
+            )}
+          </View>
+          <View style={styles.userInfo}>
+            <View style={styles.infoTitleEdit}>
+              <Text style={styles.infoTitle}>Omat tiedot</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setInfoEditing(true);
+                  console.log('info editing', infoEditing);
+                }}
+              >
+                <FontAwesomeIcon icon={faPen} size={20} color={'#4E392A'} />
+              </TouchableOpacity>
+            </View>
+            {thisUser && infoEditing ? (
+              <EditUserInfo
+                infoEditing={infoEditing}
+                setInfoEditing={setInfoEditing}
+                thisUser={thisUser}
+                setThisUser={setThisUser}
+              />
+            ) : (
+              <View style={styles.infoFields}>
+                <View style={styles.infoField}>
+                  <Text style={{fontWeight: 'bold'}}>Käyttäjänimi</Text>
+                  <Text>{thisUser?.username}</Text>
+                </View>
+                <View style={styles.infoField}>
+                  <Text style={{fontWeight: 'bold'}}>Sähköpostiosoite</Text>
+                  <Text>{thisUser?.email}</Text>
+                </View>
+                <View style={styles.bioField}>
+                  <Text style={{fontWeight: 'bold'}}>Kuvaus</Text>
+                  <Text>
+                    {thisUser?.bio_text ? thisUser.bio_text : 'Ei kuvausta.'}
+                  </Text>
+                </View>
+              </View>
+            )}
+            <Button
+              style={styles.button}
+              onPress={() => {
+                console.log('changing password');
+                setPasswordChanging(true);
+              }}
+            >
+              Vaihda salasana
+            </Button>
+            {passwordChanging && (
+              <ChangePasswordField
+                passwordChanging={passwordChanging}
+                setPasswordChanging={setPasswordChanging}
+              />
+            )}
+            <TouchableOpacity style={styles.redButton} onPress={handleDelete}>
+              <Text style={styles.redButtonText}>Poista tilisi</Text>
             </TouchableOpacity>
+            <Button
+              title="Kirjaudu ulos"
+              onPress={logout}
+              buttonStyle={styles.button}
+            />
           </View>
-          <View style={styles.infoFields}>
-            <View style={styles.infoField}>
-              <Text style={{fontWeight: 'bold'}}>Käyttäjänimi</Text>
-              <Text>WioletWizard</Text>
-            </View>
-            <View style={styles.infoField}>
-              <Text style={{fontWeight: 'bold'}}>Sähköpostiosoite</Text>
-              <Text>example@mail.com</Text>
-            </View>
-            <View style={styles.infoField}>
-              <Text style={{fontWeight: 'bold'}}>Salasana</Text>
-              <Text>**************</Text>
-            </View>
-          </View>
-          <Button style={styles.button}>Vaihda salasana</Button>
-          <TouchableOpacity style={styles.redButton}>
-            <Text style={styles.redButtonText}>Poista tilisi</Text>
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
       </View>
     </>
   );
@@ -166,7 +393,12 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   infoField: {
-    flexDirection: 'row',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
+  bioField: {
+    flexDirection: 'column',
     justifyContent: 'space-between',
     marginVertical: 10,
   },
@@ -179,5 +411,18 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 15,
     fontWeight: 'bold',
+  },
+  cancelButton: {
+    margin: 5,
+    backgroundColor: '#ffffff',
+    borderColor: '#5d71c9',
+    borderWidth: 1,
+    color: '#5d71c9',
+    borderRadius: 12,
+  },
+  saveButton: {
+    margin: 5,
+    backgroundColor: '#5d71c9',
+    borderRadius: 12,
   },
 });

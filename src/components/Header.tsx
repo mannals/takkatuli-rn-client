@@ -1,10 +1,10 @@
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faUser,
-  faBars,
+  faRightFromBracket,
   faRightToBracket,
 } from '@fortawesome/free-solid-svg-icons';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {
   NavigationProp,
   ParamListBase,
@@ -32,25 +32,47 @@ const styles = StyleSheet.create({
 
 const Header = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const {user} = useUserContext();
+  const {user, handleLogout} = useUserContext();
+
+  const logout = async () => {
+    await handleLogout();
+    Alert.alert('Kirjauduit ulos');
+    navigation.navigate('Etusivu');
+  };
+
   return (
     <View style={styles.headerContainer}>
       <Logo />
       <View style={styles.iconsContainer}>
         {user ? (
-          <TouchableOpacity
-            id="profileButton"
-            onPress={() => {
-              navigation.navigate('Profiili');
-            }}
-          >
-            <FontAwesomeIcon
-              icon={faUser}
-              size={30}
-              color={'#EEEEEE'}
-              style={{marginHorizontal: 15}}
-            />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity
+              id="profileButton"
+              onPress={() => {
+                navigation.navigate('Profiili');
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faUser}
+                size={30}
+                color={'#EEEEEE'}
+                style={{marginHorizontal: 15}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              id="logoutButton"
+              onPress={() => {
+                logout();
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faRightFromBracket}
+                size={30}
+                color={'#EEEEEE'}
+                style={{marginRight: 10}}
+              />
+            </TouchableOpacity>
+          </>
         ) : (
           <TouchableOpacity
             id="loginButton"
@@ -66,12 +88,6 @@ const Header = () => {
             />
           </TouchableOpacity>
         )}
-        <FontAwesomeIcon
-          icon={faBars}
-          size={30}
-          color={'#EEEEEE'}
-          style={{paddingHorizontal: 10}}
-        />
       </View>
     </View>
   );

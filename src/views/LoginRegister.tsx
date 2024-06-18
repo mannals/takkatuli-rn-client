@@ -15,9 +15,9 @@ const LoginRegister = () => {
       activeOpacity={1}
     >
       {!register ? <Login /> : <Register handleToggle={handleToggle} />}
-      <TouchableOpacity style={styles.linkText} onPress={handleToggle}>
-        <Text style={{color: '#5d71c9'}}>
-          {register ? 'Takaisin kirjautumiseen' : 'Luo uusi käyttäjä'}
+      <TouchableOpacity style={styles.button} onPress={handleToggle}>
+        <Text style={{color: '#EEEEEE'}}>
+          {register ? 'Kirjaudu sisään' : 'Luo uusi käyttäjä'}
         </Text>
       </TouchableOpacity>
     </TouchableOpacity>
@@ -26,11 +26,13 @@ const LoginRegister = () => {
 
 const styles = StyleSheet.create({
   button: {
-    marginTop: 0,
-    width: 250,
+    width: '50%',
     backgroundColor: '#5d71c9',
-    marginBottom: 10,
+    marginBottom: 30,
     borderRadius: 5,
+    padding: 10,
+    alignSelf: 'center',
+    alignItems: 'center',
   },
   linkText: {
     marginBottom: 50,

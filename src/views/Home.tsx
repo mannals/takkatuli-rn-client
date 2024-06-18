@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, ScrollView, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faHome} from '@fortawesome/free-solid-svg-icons';
 import {
@@ -6,14 +6,24 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import * as React from 'react';
+import {useEffect} from 'react';
 import Header from '../components/Header';
 import {useCategories} from '../hooks/apiHooks';
 import CategoryItem from '../components/Category';
 import Footer from '../components/Footer';
+import useUpdateContext from '../hooks/updateHooks';
+import {CatSubcatContext} from '../contexts/CatSubcatContext';
 
 const Home = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const {catsWithSubcats} = useCategories();
+  const {catsWithSubcats, getAllCatsWithSubcats} = useCategories();
+  const {update, setUpdate} = useUpdateContext();
+  const {catSubcat, updateCatSubcat} = React.useContext(CatSubcatContext);
+
+  useEffect(() => {
+    console.log('catSubcat changed', catSubcat);
+  }, [catSubcat]);
 
   return (
     <>
@@ -24,7 +34,7 @@ const Home = () => {
           <Text style={styles.home}>Etusivu</Text>
         </View>
         <FlatList
-          data={catsWithSubcats}
+          data={catSubcat}
           renderItem={({item}) => (
             <CategoryItem navigation={navigation} item={item} />
           )}

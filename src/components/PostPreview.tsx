@@ -17,6 +17,19 @@ const PostPreviewItem = ({item, navigation}: Props) => {
     return str.length > 30 ? str.substring(0, 29) + '...' : str;
   };
 
+  let timeDifference = '';
+  if (latest) {
+    const diffInMinutes = moment().diff(moment(latest.created_at), 'minutes');
+    const diffInSeconds = moment().diff(moment(latest.created_at), 'seconds');
+    if (diffInSeconds < 60) {
+      timeDifference = `juuri nyt`;
+    } else if (diffInMinutes < 60) {
+      timeDifference = `${diffInMinutes} minuuttia sitten`;
+    } else {
+      timeDifference = moment(latest.created_at).startOf('hour').fromNow();
+    }
+  }
+
   return (
     <TouchableOpacity
       style={styles.previewContainer}
@@ -36,9 +49,7 @@ const PostPreviewItem = ({item, navigation}: Props) => {
           <Text>{item.username}</Text>
         </View>
         <View style={styles.whenReplies}>
-          <Text style={{fontWeight: 'bold'}}>
-            {moment(item.created_at).startOf('day').fromNow()}
-          </Text>
+          <Text style={{fontWeight: 'bold'}}>{timeDifference}</Text>
           <Text>{item.replies_count.toString()} vastausta</Text>
         </View>
       </View>

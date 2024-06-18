@@ -17,6 +17,19 @@ const SubcategoryItem = ({item, navigation}: Props) => {
     return str.length > 30 ? str.substring(0, 30 - 1) + '...' : str;
   };
 
+  let timeDifference = '';
+  if (latest) {
+    const diffInMinutes = moment().diff(moment(latest.created_at), 'minutes');
+    const diffInSeconds = moment().diff(moment(latest.created_at), 'seconds');
+    if (diffInSeconds < 60) {
+      timeDifference = `juuri nyt`;
+    } else if (diffInMinutes < 60) {
+      timeDifference = `${diffInMinutes} minuuttia sitten`;
+    } else {
+      timeDifference = moment(latest.created_at).startOf('hour').fromNow();
+    }
+  }
+
   return (
     <TouchableOpacity
       style={styles.subcategoryContainer}
@@ -38,9 +51,7 @@ const SubcategoryItem = ({item, navigation}: Props) => {
               {truncate(latest.original.title)}
             </Text>
             <View style={styles.whoWhen}>
-              <Text style={{fontWeight: 'bold'}}>
-                {moment(latest.created_at).startOf('day').fromNow()}
-              </Text>
+              <Text style={{fontWeight: 'bold'}}>{timeDifference}</Text>
               <Text>{latest.username}</Text>
             </View>
           </>
@@ -64,13 +75,14 @@ const styles = StyleSheet.create({
   },
   subcategoryTitle: {
     fontWeight: '500',
-    marginLeft: 10,
+    marginLeft: 5,
     fontSize: 20,
     color: '#4E392A',
     textAlign: 'left',
   },
   subcategoryLatest: {
-    marginLeft: 10,
+    marginLeft: 5,
+    marginVertical: 5,
     fontSize: 15,
     color: '#4E392A',
     textAlign: 'left',
@@ -78,9 +90,9 @@ const styles = StyleSheet.create({
   whoWhen: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 10,
+    marginHorizontal: 5,
     marginTop: 10,
-    width: '80%',
+    width: '85%',
   },
 });
 

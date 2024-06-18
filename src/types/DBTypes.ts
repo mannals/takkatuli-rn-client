@@ -9,17 +9,38 @@ export type User = {
   password: string;
   email: string;
   user_level_id: number;
+  bio_text: string | null;
   created_at: Date | string;
   edited_at: Date | string | null;
 };
 
+export type ProfilePicture = {
+  picture_id: number;
+  user_id: number;
+  filename: string;
+  filesize: number;
+  media_type: string;
+  thumbnail?: string;
+  created_at: Date | string;
+};
+
+export type UserWithLevel = Omit<User, 'user_level_id'> &
+  Pick<UserLevel, 'level_name'>;
+
+export type UserWithNoPassword = Omit<UserWithLevel, 'password'>;
+
+export type UserWithProfilePicture = UserWithNoPassword &
+  Pick<ProfilePicture, 'filename' | 'filesize' | 'media_type'>;
+
 export type UpdateUser = {
+  username: string;
   email: string;
-  fullname: string;
-  phone: string;
-  address: string;
-  about_me: string;
-  [key: string]: string | undefined;
+  bio_text: string | null;
+};
+
+export type ChangePassword = {
+  old_password: string;
+  new_password: string;
 };
 
 export type Category = {
@@ -60,7 +81,6 @@ export type Poll = {
   edited_at: Date | string | null;
 };
 
-
 export type PollOption = {
   option_id: number;
   poll_id: number;
@@ -85,6 +105,16 @@ export type PostVote = {
   created_at: Date | string;
 };
 
+export type Votes = {
+  likes: PostVote[];
+  dislikes: PostVote[];
+};
+
+export type VoteAmounts = {
+  likes: number;
+  dislikes: number;
+};
+
 export type UploadResult = {
   message: string;
   data?: {
@@ -106,11 +136,6 @@ export type MostLikedPosts = Pick<
     likes_count: bigint;
   };
 
-export type UserWithLevel = Omit<User, 'user_level_id'> &
-  Pick<UserLevel, 'level_name'>;
-
-export type UserWithNoPassword = Omit<UserWithLevel, 'password'>;
-
 export type TokenContent = Pick<User, 'user_id'> &
   Pick<UserLevel, 'level_name'>;
 
@@ -120,7 +145,16 @@ export type CategoryWithSubcategories = Category & {
 
 export type PostWithOwner = Post & Pick<User, 'username'>;
 
-export type PostWithSubcat = Post & {
+export type PostWithAll = Post & {
+  profile_picture?: {
+    filename?: string;
+    filesize?: number;
+    media_type?: string;
+  };
+  votes?: {
+    likes: number;
+    dislikes: number;
+  };
   username: string;
   subcategory_name: string;
 };
@@ -150,19 +184,53 @@ export type PostPreview = Pick<Post, 'post_id' | 'title' | 'created_at'> &
 
 export type OriginalPost = Omit<Post, 'reply_to'>;
 
-export type PostWithoutPoll = Omit<Post, 'is_poll'>;
-
 export type MakePost = {
   subcategory_id: number;
   title: string;
   text_content: string;
+  file?: File | null;
+};
+
+export type EditedPost = {
+  title?: string;
+  text_content?: string;
+  file?: File | null;
+};
+
+export type EditPostWithoutFile = {
+  title?: string;
+  text_content?: string;
+};
+
+export type EditPostWithFile = EditedPost & {
+  filename: string;
+  filesize: number;
+  media_type: string;
+};
+
+export type MakeReply = {
+  subcategory_id: number;
+  text_content: string;
+  reply_to: number;
+};
+
+export type UploadFile = {
   file: File | null;
 };
 
-export type NewPostWithoutFile = Pick<
-  Post,
-  'subcategory_id' | 'title' | 'text_content'
->;
+export type FileValues = {
+  filename: string | undefined;
+  filesize: number | undefined;
+  media_type: string | undefined;
+  uri?: string | undefined;
+};
+
+export type NewPostWithoutFile = {
+  subcategory_id: number;
+  title?: string;
+  text_content: string;
+  reply_to?: number;
+};
 
 export type NewPostWithFile = NewPostWithoutFile & {
   filename: string;

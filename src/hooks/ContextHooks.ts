@@ -1,5 +1,6 @@
 import {useContext} from 'react';
 import {UserContext} from '../contexts/UserContext';
+import {CatSubcatContext} from '../contexts/CatSubcatContext';
 
 const useUserContext = () => {
   const context = useContext(UserContext);
@@ -8,4 +9,14 @@ const useUserContext = () => {
   }
   return context;
 };
-export {useUserContext};
+
+const useCatSubcatContext = () => {
+  const context = useContext(CatSubcatContext);
+  if (!context) {
+    throw new Error(
+      'useCatSubcatContext must be used within a CatSubcatProvider',
+    );
+  }
+  return context;
+}
+export {useUserContext, useCatSubcatContext};
