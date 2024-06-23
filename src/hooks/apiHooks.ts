@@ -5,11 +5,9 @@ import {fetchData} from '../lib/functions';
 import {
   CategoryWithSubcategories,
   FileValues,
-  MakePost,
   NewPostWithoutFile,
   Post,
   PostPreview,
-  PostWithOwner,
   PostWithAll,
   ProfilePicture,
   Subcategory,

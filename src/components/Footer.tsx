@@ -4,9 +4,9 @@ const Footer = () => {
   return (
     <View style={styles.footer}>
       <View style={styles.footerLinks}>
-      <Text style={styles.footerLink}>Etusivu</Text>
-      <Text style={styles.footerLink}>Säännöt</Text>
-      <Text style={styles.footerLink}>Privacy Policy</Text>
+        <Text style={styles.footerLink}>Etusivu</Text>
+        <Text style={styles.footerLink}>Säännöt</Text>
+        <Text style={styles.footerLink}>Privacy Policy</Text>
       </View>
     </View>
   );

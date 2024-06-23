@@ -1,9 +1,13 @@
+import {RouteProp} from '@react-navigation/native';
 import {
-  NavigationProp,
-  ParamListBase,
-  RouteProp,
-} from '@react-navigation/native';
-import {FlatList, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -23,7 +27,7 @@ import {usePosts} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import PostItem from '../components/Post';
 import {useUserContext} from '../hooks/ContextHooks';
-import {MakePost, MakeReply, NewPostWithoutFile} from '../types/DBTypes';
+import {MakeReply, NewPostWithoutFile} from '../types/DBTypes';
 
 moment.locale('fi');
 
@@ -49,7 +53,7 @@ export const PostPage = ({route, navigation}: Props) => {
   const {getPostById, thisPost, getRepliesByPostId, replies} = usePosts();
   const {update, setUpdate} = useUpdateContext();
   const [replying, setReplying] = useState<number | null>(null);
-  const {makeNewPost, makeReply} = usePosts();
+  const {makeReply} = usePosts();
   const {user} = useUserContext();
 
   useEffect(() => {

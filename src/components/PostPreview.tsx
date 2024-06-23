@@ -1,4 +1,4 @@
-import {faCircleUser, faComment} from '@fortawesome/free-solid-svg-icons';
+import {faCircleUser} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';

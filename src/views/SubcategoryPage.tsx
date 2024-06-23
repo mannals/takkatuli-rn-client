@@ -6,12 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  NavigationProp,
-  ParamListBase,
-  RouteProp,
-  useNavigation,
-} from '@react-navigation/native';
+import {RouteProp} from '@react-navigation/native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faCircleChevronRight,

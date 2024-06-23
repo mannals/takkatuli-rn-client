@@ -5,18 +5,14 @@ import {
   TouchableOpacity,
   View,
   Image,
-  TextInput,
   Pressable,
-  TouchableHighlight,
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faCircleUser,
   faEdit,
-  faReply,
   faThumbsDown,
   faThumbsUp,
-  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -40,11 +36,9 @@ const PostItem = ({post}: {post: PostWithAll}) => {
   const {update, setUpdate} = useUpdateContext();
   const {
     postVotes,
-    setPostVotes,
     getVotesByPost,
     thisVote,
     setThisVote,
-    getVote,
     addVote,
     deleteVote,
   } = useVotes();

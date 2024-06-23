@@ -1,8 +1,8 @@
-import {useState} from "react"
-import {Keyboard, StyleSheet, TouchableOpacity} from "react-native";
-import {Text} from "@rneui/base";
-import Login from "../components/Login";
-import Register from "../components/Register";
+import {useState} from 'react';
+import {Keyboard, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text} from '@rneui/base';
+import Login from '../components/Login';
+import Register from '../components/Register';
 
 const LoginRegister = () => {
   const [register, setRegister] = useState(false);

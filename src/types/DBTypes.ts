@@ -14,23 +14,10 @@ export type User = {
   edited_at: Date | string | null;
 };
 
-export type ProfilePicture = {
-  picture_id: number;
-  user_id: number;
-  filename: string;
-  filesize: number;
-  media_type: string;
-  thumbnail?: string;
-  created_at: Date | string;
-};
-
 export type UserWithLevel = Omit<User, 'user_level_id'> &
   Pick<UserLevel, 'level_name'>;
 
 export type UserWithNoPassword = Omit<UserWithLevel, 'password'>;
-
-export type UserWithProfilePicture = UserWithNoPassword &
-  Pick<ProfilePicture, 'filename' | 'filesize' | 'media_type'>;
 
 export type UpdateUser = {
   username: string;
@@ -42,6 +29,19 @@ export type ChangePassword = {
   old_password: string;
   new_password: string;
 };
+
+export type ProfilePicture = {
+  picture_id: number;
+  user_id: number;
+  filename: string;
+  filesize: number;
+  media_type: string;
+  thumbnail?: string;
+  created_at: Date | string;
+};
+
+export type UserWithProfilePicture = UserWithNoPassword &
+  Pick<ProfilePicture, 'filename' | 'filesize' | 'media_type'>;
 
 export type Category = {
   category_id: number;
@@ -73,30 +73,6 @@ export type Post = {
   edited_at: Date | string | null;
 };
 
-export type Poll = {
-  poll_id: number;
-  post_id: number;
-  title: string;
-  created_at: Date | string;
-  edited_at: Date | string | null;
-};
-
-export type PollOption = {
-  option_id: number;
-  poll_id: number;
-  post_id: number;
-  title: string;
-  created_at: Date | string;
-  edited_at: Date | string | null;
-};
-
-export type PollOptionVote = {
-  vote_id: number;
-  option_id: number;
-  user_id: number;
-  created_at: Date | string | null;
-};
-
 export type PostVote = {
   vote_id: number;
   post_id: number;
@@ -121,20 +97,6 @@ export type UploadResult = {
     image: string;
   };
 };
-
-export type MostLikedPosts = Pick<
-  Post,
-  | 'post_id'
-  | 'filename'
-  | 'filesize'
-  | 'media_type'
-  | 'title'
-  | 'text_content'
-  | 'created_at'
-> &
-  Pick<User, 'user_id' | 'username' | 'email' | 'created_at'> & {
-    likes_count: bigint;
-  };
 
 export type TokenContent = Pick<User, 'user_id'> &
   Pick<UserLevel, 'level_name'>;

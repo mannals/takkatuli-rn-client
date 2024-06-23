@@ -6,12 +6,7 @@ import {
   faHome,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-  NavigationProp,
-  ParamListBase,
-  RouteProp,
-  useNavigation,
-} from '@react-navigation/native';
+import {RouteProp} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
 import {Image} from '@rneui/base';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -40,8 +35,7 @@ type Props = {
 
 const OtherUserProfile = ({route, navigation}: Props) => {
   const userId = route.params.user_id;
-  const {getUserWithProfilePicture, thisUser, getProfilePictureById} =
-    useUser();
+  const {getUserWithProfilePicture, thisUser} = useUser();
   const [update, setUpdate] = useState<boolean>(false);
 
   useEffect(() => {

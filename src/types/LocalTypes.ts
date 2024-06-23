@@ -1,10 +1,4 @@
-import {
-  Category,
-  CategoryWithSubcategories,
-  Subcategory,
-  User,
-  UserWithNoPassword,
-} from './DBTypes';
+import {CategoryWithSubcategories, User, UserWithNoPassword} from './DBTypes';
 
 type Credentials = Pick<User, 'username' | 'password'>;
 

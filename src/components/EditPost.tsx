@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import {Controller, set, useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,9 +17,8 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {EditedPost, MakePost, PostWithAll, UploadFile} from '../types/DBTypes';
+import {EditedPost, PostWithAll} from '../types/DBTypes';
 import {useCategories, useFile, usePosts} from '../hooks/apiHooks';
-import {useUserContext} from '../hooks/ContextHooks';
 import {CatSubcatContext} from '../contexts/CatSubcatContext';
 
 const EditPost = ({
@@ -32,7 +31,7 @@ const EditPost = ({
   post: PostWithAll;
 }) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const {user} = useUserContext();
+
   const [update, setUpdate] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const {postFile} = useFile();
@@ -173,7 +172,6 @@ const EditPost = ({
                 onPress={async () => {
                   setPicEditing(true);
                   try {
-                    // get image or video files only
                     const res = await DocumentPicker.getDocumentAsync({
                       type: ['image/*', 'video/*'],
                       copyToCacheDirectory: true,

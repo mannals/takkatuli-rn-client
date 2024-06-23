@@ -9,16 +9,12 @@ import {
 import * as React from 'react';
 import {useEffect} from 'react';
 import Header from '../components/Header';
-import {useCategories} from '../hooks/apiHooks';
 import CategoryItem from '../components/Category';
 import Footer from '../components/Footer';
-import useUpdateContext from '../hooks/updateHooks';
 import {CatSubcatContext} from '../contexts/CatSubcatContext';
 
 const Home = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const {catsWithSubcats, getAllCatsWithSubcats} = useCategories();
-  const {update, setUpdate} = useUpdateContext();
   const {catSubcat, updateCatSubcat} = React.useContext(CatSubcatContext);
 
   useEffect(() => {

@@ -8,7 +8,6 @@ const CatSubcatContext = React.createContext<CatSubcatContextType>({
   updateCatSubcat: () => {},
 });
 
-// Create a provider component
 const CatSubcatProvider = ({children}: {children: React.ReactNode}) => {
   const [catSubcat, setCatSubcat] = React.useState<
     CategoryWithSubcategories[] | null

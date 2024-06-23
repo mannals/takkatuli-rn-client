@@ -2,7 +2,7 @@ import React, {createContext, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
 import {AuthContextType, Credentials} from '../types/LocalTypes';
-import {UpdateUser, User, UserWithNoPassword} from '../types/DBTypes';
+import {UpdateUser, UserWithNoPassword} from '../types/DBTypes';
 import {useAuth, useUser} from '../hooks/apiHooks';
 
 const UserContext = createContext<AuthContextType | null>(null);
@@ -21,7 +21,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
         console.log(result.user, 'result.user', result.token, 'result.token');
       }
     } catch (error) {
-      Alert.alert('Kirjautuminen epäonnistui');
+      console.error((error as Error).message);
     }
   };
 

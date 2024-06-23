@@ -1,12 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
-import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
+import {StyleSheet, View, Dimensions, Text, Platform} from 'react-native';
 import RegisterForm from './RegisterForm';
 import Header from './Header';
 
@@ -47,7 +39,6 @@ const styles = StyleSheet.create({
 });
 
 const Register = ({handleToggle}: {handleToggle: () => void}) => {
-  const navigation: NavigationProp<ParamListBase> = useNavigation();
   return (
     <View style={styles.container}>
       <Header />

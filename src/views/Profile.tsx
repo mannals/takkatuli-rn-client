@@ -4,7 +4,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -30,7 +29,7 @@ import Header from '../components/Header';
 import {useUserContext} from '../hooks/ContextHooks';
 import {useFile, useUser, useVotes} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
-import {FileValues, UploadFile} from '../types/DBTypes';
+import {UploadFile} from '../types/DBTypes';
 import EditUserInfo from '../components/EditUserInfo';
 import ChangePasswordField from '../components/ChangePassword';
 
@@ -47,7 +46,6 @@ export const Profile = () => {
     getProfilePicture,
     changeProfilePicture,
   } = useUser();
-  const {addVote} = useVotes();
   const {update, setUpdate} = useUpdateContext();
   const [picEditing, setPicEditing] = useState<boolean>(false);
   const [infoEditing, setInfoEditing] = useState<boolean>(false);
@@ -64,7 +62,6 @@ export const Profile = () => {
       {
         text: 'Poista',
         onPress: async () => {
-          // delete user
           const deletion = await deleteUser();
           Alert.alert('Käyttäjätili poistettu', '', [
             {
