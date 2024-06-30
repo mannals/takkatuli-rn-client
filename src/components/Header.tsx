@@ -13,27 +13,12 @@ import {
 import {useUserContext} from '../hooks/ContextHooks';
 import Logo from './Logo';
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: 30,
-    backgroundColor: '#4E392A',
-    height: 110,
-  },
-  iconsContainer: {
-    flex: 2,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingRight: 20,
-  },
-});
-
+// header for every page
 const Header = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {user, handleLogout} = useUserContext();
 
+  // logout user
   const logout = async () => {
     await handleLogout();
     Alert.alert('Kirjauduit ulos');
@@ -92,5 +77,22 @@ const Header = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 30,
+    backgroundColor: '#4E392A',
+    height: 110,
+  },
+  iconsContainer: {
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingRight: 20,
+  },
+});
 
 export default Header;

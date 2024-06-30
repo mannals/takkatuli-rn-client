@@ -10,13 +10,16 @@ type Props = {
   navigation: NavigationProp<ParamListBase>;
 };
 
+// subcategory box with latest post
 const SubcategoryItem = ({item, navigation}: Props) => {
   const latest = item.latest;
 
+  // truncate long titles
   const truncate = (str: string) => {
     return str.length > 30 ? str.substring(0, 30 - 1) + '...' : str;
   };
 
+  // calculate time difference and format it
   let timeDifference = '';
   if (latest) {
     const diffInMinutes = moment().diff(moment(latest.created_at), 'minutes');
@@ -90,9 +93,9 @@ const styles = StyleSheet.create({
   whoWhen: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 5,
+    marginHorizontal:0,
     marginTop: 10,
-    width: '85%',
+    width: '90%',
   },
 });
 

@@ -40,6 +40,7 @@ type Props = {
   navigation: SubcatNavigationProp;
 };
 
+// subcategory page
 export const SubcategoryPage = ({route, navigation}: Props) => {
   const {user} = useUserContext();
   const subcatId = route.params.subcat_id;
@@ -47,6 +48,7 @@ export const SubcategoryPage = ({route, navigation}: Props) => {
   const {update, setUpdate} = useUpdateContext();
   const {postPreviews, getPostPreviewsBySubcatId} = usePosts();
 
+  // refresh subcategory and post previews
   useEffect(() => {
     getSubcatById(subcatId);
     getPostPreviewsBySubcatId(subcatId);

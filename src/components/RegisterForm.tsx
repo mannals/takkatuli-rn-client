@@ -4,6 +4,7 @@ import {Card, Input} from '@rneui/base';
 import {useEffect} from 'react';
 import {useUser} from '../hooks/apiHooks';
 
+// register form
 const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
   const {postUser} = useUser();
   const initValues = {
@@ -20,6 +21,7 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
     mode: 'onBlur',
   });
 
+  // register user
   const doRegister = async (inputs: {
     username: string;
     email: string;
@@ -37,6 +39,7 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
     }
   };
 
+  // log errors
   useEffect(() => {
     console.log(errors);
   }, [errors]);
@@ -118,7 +121,6 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
         )}
         name="password"
       />
-      {/* TODO: add password confirmation */}
       <TouchableOpacity
         style={styles.registerButton}
         onPress={handleSubmit(doRegister)}

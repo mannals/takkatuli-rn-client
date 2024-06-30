@@ -1,5 +1,6 @@
 import {Text, StyleSheet, View} from 'react-native';
 
+// footer for every page
 const Footer = () => {
   return (
     <View style={styles.footer}>

@@ -27,6 +27,7 @@ import useUpdateContext from '../hooks/updateHooks';
 import {useUserContext} from '../hooks/ContextHooks';
 import EditPost from './EditPost';
 
+// post item
 const PostItem = ({post}: {post: PostWithAll}) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {user} = useUserContext();
@@ -43,6 +44,7 @@ const PostItem = ({post}: {post: PostWithAll}) => {
     deleteVote,
   } = useVotes();
 
+  // refresh post and votes
   useEffect(() => {
     const loadVote = async () => {
       const vote = await AsyncStorage.getItem(`vote-${post.post_id}`);
@@ -53,13 +55,15 @@ const PostItem = ({post}: {post: PostWithAll}) => {
       }
     };
     loadVote();
-    console.log(user);
-    console.log('thisVote', thisVote);
     getPostById(post.post_id);
     getVotesByPost(post.post_id);
-    console.log('profile pic', post.profile_picture?.filename);
   }, [update]);
 
+  // handle vote
+  // vote: true = like, false = dislike
+  // if user is not logged in, alert to login
+  // if user is post owner, alert that user cannot vote own post
+  // if user has already voted, delete vote
   const handleVote = (vote: boolean) => {
     if (user && user.user_id !== post.user_id) {
       if (vote && voted !== 'like') {
@@ -265,14 +269,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 10,
     width: '50%',
-    alignItems: 'center',
-  },
-  replyButton: {
-    width: 40,
-    marginRight: 0,
-    marginVertical: 10,
-    backgroundColor: '#D9D9D9',
-    paddingVertical: 10,
     alignItems: 'center',
   },
 });

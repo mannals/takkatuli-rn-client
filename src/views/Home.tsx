@@ -15,8 +15,9 @@ import {CatSubcatContext} from '../contexts/CatSubcatContext';
 
 const Home = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const {catSubcat, updateCatSubcat} = React.useContext(CatSubcatContext);
+  const {catSubcat} = React.useContext(CatSubcatContext);
 
+  // update categories and subcategories
   useEffect(() => {
     console.log('catSubcat changed', catSubcat);
   }, [catSubcat]);

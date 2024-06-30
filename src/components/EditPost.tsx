@@ -21,6 +21,7 @@ import {EditedPost, PostWithAll} from '../types/DBTypes';
 import {useCategories, useFile, usePosts} from '../hooks/apiHooks';
 import {CatSubcatContext} from '../contexts/CatSubcatContext';
 
+// edit post form
 const EditPost = ({
   postEditing,
   setPostEditing,
@@ -63,15 +64,18 @@ const EditPost = ({
     reset(values);
   };
 
+  // refresh post data
   useEffect(() => {
     getPostById(post.post_id);
   }, [update]);
 
+  // handle post edit
   const handleEditPost = async (inputs: EditedPost) => {
     await doUpload(inputs);
     await getPostById(post.post_id);
   };
 
+  // send edited post to server
   const doUpload = async (inputs: EditedPost) => {
     console.log('doUpload entered');
     console.log('inputs', inputs);
@@ -83,6 +87,8 @@ const EditPost = ({
         title,
         text_content,
       };
+
+      // if file is selected, upload it first
       if (file && token) {
         const fileResult = await postFile(fileValues.uri, token);
         if (fileResult) {
@@ -102,6 +108,7 @@ const EditPost = ({
             });
           }
         }
+      // if no file is selected, edit post without file
       } else if (token) {
         const postResult = await editPost(null, withoutFile, post.post_id);
         if (postResult) {
@@ -119,6 +126,7 @@ const EditPost = ({
     }
   };
 
+  // handle post deletion
   const handleDelete = async () => {
     Alert.alert('Poista postaus', 'Haluatko varmasti poistaa postauksesi?', [
       {

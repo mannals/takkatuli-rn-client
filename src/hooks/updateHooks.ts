@@ -1,6 +1,7 @@
 import {useContext} from 'react';
 import {UpdateContext} from '../contexts/UpdateContext';
 
+// custom hook for update context
 const useUpdateContext = () => {
   const context = useContext(UpdateContext);
   if (!context) {

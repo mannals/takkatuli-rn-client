@@ -29,6 +29,7 @@ import PostItem from '../components/Post';
 import {useUserContext} from '../hooks/ContextHooks';
 import {MakeReply, NewPostWithoutFile} from '../types/DBTypes';
 
+// change language to Finnish for date formatting
 moment.locale('fi');
 
 type RootStackParamList = {
@@ -48,6 +49,7 @@ type Props = {
   navigation: PostPageNavigationProp;
 };
 
+// post page
 export const PostPage = ({route, navigation}: Props) => {
   const postId = route.params.post_id;
   const {getPostById, thisPost, getRepliesByPostId, replies} = usePosts();
@@ -56,6 +58,7 @@ export const PostPage = ({route, navigation}: Props) => {
   const {makeReply} = usePosts();
   const {user} = useUserContext();
 
+  // refresh post and replies
   useEffect(() => {
     getPostById(postId);
     getRepliesByPostId(postId);
@@ -79,6 +82,7 @@ export const PostPage = ({route, navigation}: Props) => {
 
   const [refreshing, setRefreshing] = useState(false);
 
+  // refresh control
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
@@ -86,8 +90,7 @@ export const PostPage = ({route, navigation}: Props) => {
     }, 2000);
   }, []);
 
-  console.log(thisPost?.thumbnail);
-
+  // make reply
   const doReply = async (data: MakeReply) => {
     const token = await AsyncStorage.getItem('token');
     const reply: NewPostWithoutFile = {

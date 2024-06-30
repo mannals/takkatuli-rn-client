@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 
+// custom hook for form
 const useForm = <T>(callback: () => void, initState: T) => {
   const [inputs, setInputs] = useState<T>(initState);
 
+  // handle submit
   const handleSubmit = (event: React.SyntheticEvent) => {
     if (event) {
       event.preventDefault();
@@ -10,6 +12,7 @@ const useForm = <T>(callback: () => void, initState: T) => {
     callback();
   };
 
+  // handle input change
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {

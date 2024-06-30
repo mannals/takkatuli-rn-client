@@ -31,8 +31,13 @@ import {
 import {CatSubcatContext} from '../contexts/CatSubcatContext';
 import useUpdateContext from './updateHooks';
 
+// custom hooks for API calls
+
+// hook for user
 const useUser = () => {
   const [thisUser, setThisUser] = useState<UserWithProfilePicture | null>(null);
+
+  // get user by id
   const getUserById = async (id: number) => {
     const result = await fetchData<User>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/' + id,
@@ -42,6 +47,7 @@ const useUser = () => {
     }
   };
 
+  // get user by token
   const getUserByToken = async (token: string) => {
     const options = {
       headers: {
@@ -55,6 +61,7 @@ const useUser = () => {
     return result;
   };
 
+  // post user
   const postUser = async (user: Record<string, string>) => {
     const options = {
       method: 'POST',
@@ -68,18 +75,22 @@ const useUser = () => {
       options,
     );
   };
+
+  // get username availability
   const getUsernameAvailability = async (username: string) => {
     return await fetchData<{available: boolean}>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/username/' + username,
     );
   };
 
+  // get email availability
   const getEmailAvailability = async (email: string) => {
     return await fetchData<{available: boolean}>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/email/' + email,
     );
   };
 
+  // edit user
   const putUser = async (
     token: string,
     user: UpdateUser,
@@ -99,6 +110,7 @@ const useUser = () => {
     return response;
   };
 
+  // change password
   const putPassword = async (passwords: {
     old_password: string;
     new_password: string;
@@ -118,6 +130,7 @@ const useUser = () => {
     );
   };
 
+  // delete user
   const deleteUser = async () => {
     const token = await AsyncStorage.getItem('token');
     return await fetchData<MessageResponse>(
@@ -134,8 +147,8 @@ const useUser = () => {
   const [userWithProfilePicture, setUserWithProfilePicture] =
     useState<UserWithProfilePicture>();
 
+  // get user with profile picture
   const getUserWithProfilePicture = async (id: number) => {
-    console.log('user id', id);
     const user = await fetchData<UserWithProfilePicture>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/' + id + '/profpic',
     );
@@ -145,12 +158,16 @@ const useUser = () => {
     }
   };
 
+  // your own profile picture
   const [profilePicture, setProfilePicture] = useState<ProfilePicture | null>(
     null,
   );
+
+  // any user's profile picture
   const [thisProfilePicture, setThisProfilePicture] =
     useState<ProfilePicture | null>(null);
 
+  // get profile picture
   const getProfilePicture = async () => {
     const token = await AsyncStorage.getItem('token');
     const options = {
@@ -166,6 +183,7 @@ const useUser = () => {
     return result;
   };
 
+  // get profile picture by id
   const getProfilePictureById = async (id: number) => {
     const result = await fetchData<ProfilePicture | null>(
       process.env.EXPO_PUBLIC_MEDIA_API + '/profile/image/' + id,
@@ -174,16 +192,14 @@ const useUser = () => {
     return result;
   };
 
+  // change profile picture
   const changeProfilePicture = async (file: UploadResponse, token: string) => {
-    console.log('changeProfilePicture entered');
-    console.log(file);
-
     const filevalues: FileValues = {
       filename: file.data.filename,
       filesize: file.data.filesize,
       media_type: file.data.media_type,
     };
-    console.log('filevalues', filevalues);
+
     const options = {
       method: 'PUT',
       headers: {
@@ -220,7 +236,9 @@ const useUser = () => {
   };
 };
 
+// hook for authentication
 const useAuth = () => {
+  // post login
   const postLogin = async (values: Credentials) => {
     const options: RequestInit = {
       method: 'POST',
@@ -238,12 +256,14 @@ const useAuth = () => {
   return {postLogin};
 };
 
+// hook for categories
 const useCategories = () => {
   const [catsWithSubcats, setCatsWithSubcats] = useState<
     CategoryWithSubcategories[]
   >([]);
   const {update} = useUpdateContext();
 
+  // get all categories with subcategories
   const getAllCatsWithSubcats = async () => {
     try {
       const cats = await fetchData<CategoryWithSubcategories[]>(
@@ -258,6 +278,7 @@ const useCategories = () => {
     }
   };
 
+  // update categories
   useEffect(() => {
     getAllCatsWithSubcats();
   }, [update]);
@@ -269,9 +290,11 @@ const useCategories = () => {
   };
 };
 
+// hook for subcategories
 const useSubcategories = () => {
   const [thisSubcat, setThisSubcat] = useState<Subcategory | null>(null);
 
+  // get subcategory by id
   const getSubcatById = async (id: number) => {
     try {
       const subcat = await fetchData<Subcategory>(
@@ -289,6 +312,7 @@ const useSubcategories = () => {
   return {thisSubcat, setThisSubcat, getSubcatById};
 };
 
+// hook for posts
 const usePosts = () => {
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [thisPost, setThisPost] = useState<PostWithAll | null>(null);
@@ -297,6 +321,7 @@ const usePosts = () => {
   const {update} = useUpdateContext();
   const {catSubcat, updateCatSubcat} = React.useContext(CatSubcatContext);
 
+  // get all posts
   const getAllPosts = async () => {
     try {
       const posts = await fetchData<Post[]>(
@@ -310,6 +335,7 @@ const usePosts = () => {
     }
   };
 
+  // get post previews by subcategory id
   const getPostPreviewsBySubcatId = async (subcat_id: number) => {
     try {
       const previews = await fetchData<PostPreview[]>(
@@ -326,13 +352,13 @@ const usePosts = () => {
     }
   };
 
+  // get post by id
   const getPostById = async (postId: number) => {
     try {
       const post = await fetchData<PostWithAll>(
         process.env.EXPO_PUBLIC_MEDIA_API + '/posts/' + postId,
       );
       if (post) {
-        console.log(post.created_at);
         setThisPost(post);
       }
     } catch (e) {
@@ -340,11 +366,13 @@ const usePosts = () => {
     }
   };
 
+  // update posts
   useEffect(() => {
     getAllPosts();
     updateCatSubcat();
   }, [update]);
 
+  // get replies by post id
   const getRepliesByPostId = async (postId: number) => {
     try {
       const replies = await fetchData<PostWithAll[]>(
@@ -358,12 +386,15 @@ const usePosts = () => {
     }
   };
 
+  // make new post
   const makeNewPost = async (
     fileData: UploadResponse | null,
     postData: NewPostWithoutFile,
     token: string,
   ) => {
     try {
+      // file is optional
+      // if file is included
       if (fileData) {
         const post = {
           ...postData,
@@ -383,6 +414,7 @@ const usePosts = () => {
           process.env.EXPO_PUBLIC_MEDIA_API + '/posts',
           options,
         );
+      // if file is not included
       } else {
         const options = {
           method: 'POST',
@@ -402,6 +434,7 @@ const usePosts = () => {
     }
   };
 
+  // make reply
   const makeReply = async (replyData: NewPostWithoutFile, token: string) => {
     try {
       const options = {
@@ -421,6 +454,7 @@ const usePosts = () => {
     }
   };
 
+  // edit post
   const editPost = async (
     fileData: UploadResponse | null,
     postData: EditedPost,
@@ -428,6 +462,8 @@ const usePosts = () => {
   ) => {
     const token = await AsyncStorage.getItem('token');
     try {
+      // file is optional
+      // if file is included
       if (fileData) {
         const post: EditPostWithFile = {
           ...postData,
@@ -447,6 +483,7 @@ const usePosts = () => {
           process.env.EXPO_PUBLIC_MEDIA_API + '/posts/' + postId,
           options,
         );
+      // if file is not included
       } else {
         const options = {
           method: 'PUT',
@@ -466,9 +503,10 @@ const usePosts = () => {
     }
   };
 
+  // delete post
   const deletePost = async (postId: number) => {
     const token = await AsyncStorage.getItem('token');
-    console.log('deletePost entered');
+
     try {
       const options = {
         method: 'DELETE',
@@ -482,7 +520,6 @@ const usePosts = () => {
       );
 
       if (response) {
-        console.log('deletePost response', response);
         updateCatSubcat();
         return response;
       }
@@ -507,15 +544,20 @@ const usePosts = () => {
   };
 };
 
+// hook for votes
 const useVotes = () => {
   const [postVotes, setPostVotes] = useState<VoteAmounts | null>(null);
   const [thisVote, setThisVote] = useState<string | null>();
+
+  // get votes by post
   const getVotesByPost = async (postId: number) => {
     try {
       const votes = await fetchData<Votes>(
-        process.env.EXPO_PUBLIC_MEDIA_API + '/posts/' + postId + '/votes',
+        process.env.EXPO_PUBLIC_MEDIA_API + '/votes/' + postId + '/all',
       );
       if (votes) {
+        // if there are votes
+        // divide votes into likes and dislikes
         const amts: VoteAmounts = {
           likes: 0,
           dislikes: 0,
@@ -533,6 +575,7 @@ const useVotes = () => {
     }
   };
 
+  // get my vote
   const getVote = async (postId: number) => {
     const token = await AsyncStorage.getItem('token');
     try {
@@ -542,10 +585,10 @@ const useVotes = () => {
         },
       };
       const result = await fetchData<PostVote | MessageResponse>(
-        process.env.EXPO_PUBLIC_MEDIA_API + '/posts/' + postId + '/vote',
+        process.env.EXPO_PUBLIC_MEDIA_API + '/votes/' + postId,
         options,
       );
-      console.log('getVote result', result);
+
       if (result && 'approve' in result) {
         if (result.approve === true) {
           setThisVote('like');
@@ -560,10 +603,9 @@ const useVotes = () => {
     }
   };
 
+  // add vote
   const addVote = async (postId: number, isApprove: boolean) => {
     const token = await AsyncStorage.getItem('token');
-    console.log('post id', postId);
-    console.log('isApprove', isApprove);
     try {
       const options = {
         method: 'POST',
@@ -574,14 +616,15 @@ const useVotes = () => {
         body: JSON.stringify({approve: isApprove}),
       };
       const result = await fetchData<PostVote | MessageResponse>(
-        process.env.EXPO_PUBLIC_MEDIA_API + '/posts/' + postId + '/vote',
+        process.env.EXPO_PUBLIC_MEDIA_API + '/votes/' + postId,
         options,
       );
 
-      console.log(result);
+      // if vote was added
       if (result && 'approve' in result) {
         setThisVote(result.approve ? 'like' : 'dislike');
         getVotesByPost(postId);
+        // if vote was removed
       } else if (
         result &&
         'message' in result &&
@@ -595,6 +638,7 @@ const useVotes = () => {
     }
   };
 
+  // delete vote
   const deleteVote = async (postId: number) => {
     const token = await AsyncStorage.getItem('token');
     try {
@@ -605,7 +649,7 @@ const useVotes = () => {
         },
       };
       const result = await fetchData<MessageResponse>(
-        process.env.EXPO_PUBLIC_MEDIA_API + '/posts/' + postId + '/vote',
+        process.env.EXPO_PUBLIC_MEDIA_API + '/votes/' + postId,
         options,
       );
       if (result) {
@@ -629,12 +673,14 @@ const useVotes = () => {
   };
 };
 
+// hook for file upload
 const useFile = () => {
+  // post file
   const postFile = async (
     uri: string,
     token: string,
   ): Promise<UploadResponse> => {
-    console.log('loading....');
+    console.log('postFile', uri, token);
     const fileResult = await FileSystem.uploadAsync(
       process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/upload',
       uri,
@@ -647,7 +693,6 @@ const useFile = () => {
         },
       },
     );
-    console.log('loading finished');
     return fileResult.body ? JSON.parse(fileResult.body) : null;
   };
 

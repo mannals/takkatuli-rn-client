@@ -2,6 +2,20 @@ import {StyleSheet, View, Dimensions, Text, Platform} from 'react-native';
 import RegisterForm from './RegisterForm';
 import Header from './Header';
 
+// register page
+// contains header and register form
+const Register = ({handleToggle}: {handleToggle: () => void}) => {
+  return (
+    <View style={styles.container}>
+      <Header />
+      <View style={styles.registerContainer}>
+        <Text style={styles.headerText}>Luo profiili</Text>
+        <RegisterForm handleToggle={handleToggle} />
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     padding: 0,
@@ -27,27 +41,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4e392a',
   },
-  links: {
-    height: 50,
-    justifyContent: 'space-between',
-    marginVertical: 10,
-  },
-  linkText: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
 });
-
-const Register = ({handleToggle}: {handleToggle: () => void}) => {
-  return (
-    <View style={styles.container}>
-      <Header />
-      <View style={styles.registerContainer}>
-        <Text style={styles.headerText}>Luo profiili</Text>
-        <RegisterForm handleToggle={handleToggle} />
-      </View>
-    </View>
-  );
-};
 
 export default Register;

@@ -14,6 +14,7 @@ import moment from 'moment';
 import Header from '../components/Header';
 import {useUser} from '../hooks/apiHooks';
 
+// change language to Finnish for date formatting
 moment.locale('fi');
 
 type RootStackParamList = {
@@ -33,17 +34,18 @@ type Props = {
   navigation: PostPageNavigationProp;
 };
 
+// other user profile page
 const OtherUserProfile = ({route, navigation}: Props) => {
   const userId = route.params.user_id;
   const {getUserWithProfilePicture, thisUser} = useUser();
   const [update, setUpdate] = useState<boolean>(false);
 
+  // refresh user data
   useEffect(() => {
     getUserWithProfilePicture(userId);
-    console.log('useEffect thisUser', thisUser);
-    console.log('profile pic', thisUser?.filename);
   }, [update]);
 
+  // set bio text
   const bio = thisUser?.bio_text ? thisUser.bio_text : 'Ei kuvausta';
 
   return (

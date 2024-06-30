@@ -1,5 +1,6 @@
 import {ErrorResponse} from '../types/MessageTypes';
 
+// fetching data from the server
 const fetchData = async <T>(
   url: string,
   options: RequestInit = {},

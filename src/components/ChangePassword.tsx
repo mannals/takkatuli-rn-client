@@ -10,6 +10,7 @@ import {useState} from 'react';
 import {useUser} from '../hooks/apiHooks';
 import {ChangePassword} from '../types/DBTypes';
 
+// change password form
 const ChangePasswordField = ({
   passwordChanging,
   setPasswordChanging,
@@ -44,10 +45,14 @@ const ChangePasswordField = ({
     confirm_new_password: string;
   }) => {
     console.log('Changing password');
+
+    // check if new password is different from old password
     if (inputs.old_password === inputs.new_password) {
       Alert.alert('Uuden salasanan on oltava eri kuin vanha salasana');
       return;
     }
+
+    // check if new password and confirm new password match
     if (inputs.new_password !== inputs.confirm_new_password) {
       Alert.alert('Salasanat eivät täsmää');
       return;
@@ -61,6 +66,7 @@ const ChangePasswordField = ({
     await doUpload(pswdChange);
   };
 
+  // upload new password to database
   const doUpload = async (inputs: ChangePassword) => {
     try {
       await putPassword(inputs);

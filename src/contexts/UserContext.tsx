@@ -5,13 +5,16 @@ import {AuthContextType, Credentials} from '../types/LocalTypes';
 import {UpdateUser, UserWithNoPassword} from '../types/DBTypes';
 import {useAuth, useUser} from '../hooks/apiHooks';
 
+// context for user
 const UserContext = createContext<AuthContextType | null>(null);
 
+// provider for user
 const UserProvider = ({children}: {children: React.ReactNode}) => {
   const [user, setUser] = useState<UserWithNoPassword | null>(null);
   const {postLogin} = useAuth();
   const {getUserByToken, putUser} = useUser();
 
+  // handle login
   const handleLogin = async (creds: Credentials) => {
     try {
       const result = await postLogin(creds);
@@ -25,6 +28,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
+  // handle logout
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('token');
@@ -34,6 +38,8 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
+  // handle auto login
+  // ensure user stays logged in
   const handleAutoLogin = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -49,6 +55,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
+  // handle get user
   const handleGetUser = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -63,6 +70,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
+  // handle edit user
   const handleEdit = async (values: UpdateUser) => {
     try {
       const token = await AsyncStorage.getItem('token');

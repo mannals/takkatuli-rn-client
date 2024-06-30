@@ -10,13 +10,16 @@ type Props = {
   navigation: NavigationProp<ParamListBase>;
 };
 
+// post preview item
 const PostPreviewItem = ({item, navigation}: Props) => {
   const latest = item.latest;
 
+  // truncate text content for preview
   const truncate = (str: string) => {
     return str.length > 30 ? str.substring(0, 29) + '...' : str;
   };
 
+  // calculate time difference and format it
   let timeDifference = '';
   if (latest) {
     const diffInMinutes = moment().diff(moment(latest.created_at), 'minutes');
@@ -92,9 +95,9 @@ const styles = StyleSheet.create({
   whenReplies: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 10,
+    marginHorizontal: 0,
     marginTop: 10,
-    width: '80%',
+    width: '90%',
   },
 });
 

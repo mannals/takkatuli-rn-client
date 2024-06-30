@@ -8,6 +8,7 @@ type Props = {
   navigation: NavigationProp<ParamListBase>;
 };
 
+// category box with subcategories
 const CategoryItem = ({item, navigation}: Props) => {
   return (
     <View style={styles.container}>

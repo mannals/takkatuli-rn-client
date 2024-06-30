@@ -12,6 +12,7 @@ import {UpdateUser, UserWithProfilePicture} from '../types/DBTypes';
 import {useUser} from '../hooks/apiHooks';
 import {useUserContext} from '../hooks/ContextHooks';
 
+// edit user info form
 const EditUserInfo = ({
   infoEditing,
   setInfoEditing,
@@ -47,20 +48,21 @@ const EditUserInfo = ({
     reset(values);
   };
 
+  // refresh user info after editing
   useEffect(() => {
     getUserWithProfilePicture(thisUser.user_id);
     handleGetUser();
   }, [update]);
 
+  // edit user info
   const handleEditUserInfo = async (inputs: UpdateUser) => {
     await doUpload(inputs);
     await getUserWithProfilePicture(thisUser.user_id);
     await handleGetUser();
   };
 
+  // upload edited user info to server
   const doUpload = async (inputs: UpdateUser) => {
-    console.log('doUpload entered');
-    console.log('doUpload inputs', inputs);
     try {
       const token = await AsyncStorage.getItem('token');
       console.log('token', token);
@@ -73,8 +75,6 @@ const EditUserInfo = ({
           setInfoEditing(false);
           setThisUser(result.user);
           getUserWithProfilePicture(thisUser.user_id);
-          console.log(thisUser, 'doUpload thisUser');
-          console.log('refreshing');
           navigation.navigate('Profiili');
         }
       }

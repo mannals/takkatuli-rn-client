@@ -3,11 +3,13 @@ import {CatSubcatContextType} from '../types/LocalTypes';
 import {useCategories} from '../hooks/apiHooks';
 import {CategoryWithSubcategories} from '../types/DBTypes';
 
+// context for categories and subcategories
 const CatSubcatContext = React.createContext<CatSubcatContextType>({
   catSubcat: null,
   updateCatSubcat: () => {},
 });
 
+// provider for categories and subcategories
 const CatSubcatProvider = ({children}: {children: React.ReactNode}) => {
   const [catSubcat, setCatSubcat] = React.useState<
     CategoryWithSubcategories[] | null
@@ -15,6 +17,7 @@ const CatSubcatProvider = ({children}: {children: React.ReactNode}) => {
 
   const {getAllCatsWithSubcats} = useCategories();
 
+  // update categories and subcategories
   const updateCatSubcat = async () => {
     console.log('updateCatSubcat called');
     const newCatSubcat = await getAllCatsWithSubcats();
@@ -24,6 +27,7 @@ const CatSubcatProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
+  // update categories and subcategories on mount
   useEffect(() => {
     updateCatSubcat();
   }, []);

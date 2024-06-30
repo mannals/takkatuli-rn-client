@@ -4,7 +4,6 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Platform,
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCircleChevronRight, faHome} from '@fortawesome/free-solid-svg-icons';
@@ -16,11 +15,9 @@ import {Button, Card} from '@rneui/base';
 import {Controller, useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../components/Header';
-import {useUserContext} from '../hooks/ContextHooks';
 import {useFile, usePosts, useSubcategories} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {MakePost, NewPostWithoutFile} from '../types/DBTypes';
-import {UploadResponse} from '../types/MessageTypes';
 
 type RootStackParamList = {
   Alakategoria: {subcat_id: number};
@@ -41,6 +38,7 @@ type Props = {
   navigation: SubcatNavigationProp;
 };
 
+// make post page
 const MakePostPage = ({route, navigation}: Props) => {
   const [file, setFile] = useState<File | null>(null);
   const [URI, setURI] = useState<string>('');
@@ -67,16 +65,12 @@ const MakePostPage = ({route, navigation}: Props) => {
     reset(values);
   };
 
+  // refresh subcategory
   useEffect(() => {
     getSubcatById(subcatId);
   }, [update]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
-  };
-
+  // upload post
   const doUpload = async (inputs: MakePost) => {
     console.log('doUpload entered');
     try {
@@ -88,6 +82,9 @@ const MakePostPage = ({route, navigation}: Props) => {
         title,
         text_content,
       };
+      // file is optional
+      // if file is selected, upload file first
+      // then upload post
       if (file && token) {
         const fileResult = await postFile(URI, token);
         if (fileResult) {
@@ -233,14 +230,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 0,
   },
-  subcatInfo: {
-    width: '100%',
-    padding: 30,
-  },
-  subcatTitle: {
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -257,16 +246,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-  },
-  listTop: {
-    marginHorizontal: 20,
-    padding: 10,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 2,
-    borderTopColor: '#D4863D',
   },
   titleInput: {
     marginTop: 30,

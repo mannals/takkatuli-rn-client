@@ -4,8 +4,11 @@ import {Text} from '@rneui/base';
 import Login from '../components/Login';
 import Register from '../components/Register';
 
+// login and register page
 const LoginRegister = () => {
   const [register, setRegister] = useState(false);
+
+  // toggle between login and register
   const handleToggle = () => setRegister(!register);
 
   return (

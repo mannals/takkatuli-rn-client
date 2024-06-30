@@ -27,12 +27,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Controller, useForm} from 'react-hook-form';
 import Header from '../components/Header';
 import {useUserContext} from '../hooks/ContextHooks';
-import {useFile, useUser, useVotes} from '../hooks/apiHooks';
+import {useFile, useUser} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {UploadFile} from '../types/DBTypes';
 import EditUserInfo from '../components/EditUserInfo';
 import ChangePasswordField from '../components/ChangePassword';
 
+// page for viewing and editing user profile
 export const Profile = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {user, handleGetUser, handleLogout} = useUserContext();
@@ -57,6 +58,7 @@ export const Profile = () => {
     uri: '',
   });
 
+  // delete user account
   const handleDelete = async () => {
     Alert.alert('Poistetaanko käyttäjätili?', '', [
       {
@@ -81,6 +83,7 @@ export const Profile = () => {
     ]);
   };
 
+  // logout user
   const logout = async () => {
     await handleLogout();
     navigation.navigate('Kirjaudu/Rekisteröidy');
@@ -96,6 +99,7 @@ export const Profile = () => {
     reset,
   } = useForm({defaultValues: values});
 
+  // get user data
   useEffect(() => {
     if (!user) {
       navigation.navigate('Kirjaudu/Rekisteröidy');
@@ -103,14 +107,13 @@ export const Profile = () => {
       handleGetUser();
       getProfilePicture();
       getUserWithProfilePicture(user.user_id);
-      console.log(thisUser);
-      console.log(profilePicture);
-      console.log('profile picture', profilePicture?.filename);
     }
   }, [update]);
 
+  // upload profile picture
   const doUpload = async (inputs: UploadFile) => {
     try {
+      console.log('do upload', fileValues);
       const token = await AsyncStorage.getItem('token');
       if (fileValues.uri && token) {
         const fileResult = await postFile(fileValues.uri, token);
